@@ -4,8 +4,8 @@
  * Add the MIT license
  */
 
-//import {display, Font, Color, Layer } from 'ssd1306-i2c-js'
-const ssd1306 = require('ssd1306-i2c-js');
+//import {display, Font, Color, Layer } from 'oled-ssd1306-i2c'
+const ssd1306 = require('oled-ssd1306-i2c');
 var display = ssd1306.display;
 var Font = ssd1306.Font;
 var Color = ssd1306.Color;
