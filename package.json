@@ -1,0 +1,25 @@
+{
+  "name": "signalk-raspberry-pi-ssd1306",
+  "author": "Jean-David Caprace",
+  "description": "SignalK node server plugin that plot SK fields on a OLED SSD1306 on Raspberry-Pi",
+  "license": "MIT",
+  "homepage": "https://github.com/jdcaprace/signalk-raspberry-pi-ssd1306#readme",
+  "version": "0.0.1",
+  "main": "index.js",
+  "keywords": [
+    "signalk-node-server-plugin"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jdcaprace/signalk-raspberry-pi-ssd1306.git"
+  },
+  "bugs": {
+    "url": "https://github.com/jdcaprace/signalk-raspberry-pi-ssd1306/issues"
+  },
+  "dependencies": {
+    "ssd1306-i2c-js": "1.0.5"
+  },
+  "scripts": {
+    "test": "echo \"No test specified\""
+  }
+}
