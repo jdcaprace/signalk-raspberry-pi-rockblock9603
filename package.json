@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "@signalk/signalk-schema": "1.6.0",
-    "iridium-sbd": "0.0.11"
+    "node-iridium-sbd": "0.0.10"
   },
   "scripts": {
     "test": "echo \"No test specified\""
