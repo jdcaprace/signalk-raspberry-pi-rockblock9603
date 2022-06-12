@@ -17,8 +17,7 @@
     "url": "https://github.com/jdcaprace/signalk-raspberry-pi-rockblock9603/issues"
   },
   "dependencies": {
-    "@signalk/signalk-schema": "1.6.0",
-    "iridium-sbd": "cape-io/node-iridium-sbd"
+    "@signalk/signalk-schema": "1.6.0"
   },
   "scripts": {
     "test": "echo \"No test specified\""
