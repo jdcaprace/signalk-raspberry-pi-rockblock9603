@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "@signalk/signalk-schema": "1.6.0",
-    "node-iridium-sbd": "0.0.10"
+    "iridium-sbd": "cape-io/node-iridium-sbd"
   },
   "scripts": {
     "test": "echo \"No test specified\""

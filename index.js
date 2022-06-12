@@ -4,7 +4,7 @@
  * Add the MIT license
  */
 
-const startiridium = require('node-iridium-sbd')
+const startiridium = require('iridium-sbd')
 
 //To obtain the SignalK paths
 const signalkSchema = require('@signalk/signalk-schema')
