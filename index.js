@@ -4,7 +4,9 @@
  * Add the MIT license
  */
 
-const startiridium = require('iridium-sbd.js')
+//See the latest version of iridium here:
+//https://github.com/dudewheresmycode/node-iridium-sbd
+const startiridium = require('./iridium-sbd.js')
 
 //To obtain the SignalK paths
 const signalkSchema = require('@signalk/signalk-schema')
