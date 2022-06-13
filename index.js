@@ -34,8 +34,8 @@ module.exports = function (app) {
       usbdevicepath: {
         type: 'string',
         title: 'USB device path',
-        description: 'Example: /dev/ttyUSB0 (USB) or /dev/ttyAMA0 (Serial) ',
-        default: '/dev/tty/USB0',
+        description: 'Example: /dev/ttyUSB0 (USB) or /dev/ttyS0 (Serial) ',
+        default: '/dev/ttyUSB0',
       },
      /* skpath1: {
         type: 'string',
@@ -83,7 +83,7 @@ module.exports = function (app) {
   var unsubscribes = [];
 
   plugin.start = function (options) {
-    let tpv = {};
+    //let tpv = {};
 
     iridium.open({
       debug: 1, //turn debugging on
@@ -103,9 +103,10 @@ module.exports = function (app) {
       console.log('>>> ' + log);
     });
 
-    function iridiumsendregularmessage(){
+    function iridiumsendpayloadmessage(){
     //TODO - Develop here the message package to be sent with a certain frequence.
-    }
+    console.log('Virtual payload message for testing!');
+  }
 
     /*
     iridium.on('ringalert', function() {
@@ -180,7 +181,7 @@ module.exports = function (app) {
 */
 
     	     
-    timer = setInterval(iridiumsendregularmessage, options.messagesendingrate * 1000 * 60);
+    timer = setInterval(iridiumsendpayloadmessage, options.messagesendingrate * 1000 * 60);
   }
 
  
