@@ -6,7 +6,7 @@
 
 //See the latest version of iridium here:
 //https://github.com/dudewheresmycode/node-iridium-sbd
-const startiridium = require('./iridium-sbd.js')
+const iridium = require('./iridium-sbd.js')
 
 //To obtain the SignalK paths
 const signalkSchema = require('@signalk/signalk-schema')
@@ -34,7 +34,7 @@ module.exports = function (app) {
       usbdevicepath: {
         type: 'string',
         title: 'USB device path',
-        description: 'Example: /dev/ttyUSB0',
+        description: 'Example: /dev/ttyUSB0 (USB) or /dev/ttyAMA0 (Serial) ',
         default: '/dev/tty/USB0',
       },
      /* skpath1: {

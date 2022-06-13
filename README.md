@@ -33,7 +33,7 @@ The GPIO of the RockBLOCK 9603 and 9602 are presented here: https://docs.rockblo
 You need to make sure Raspberry Pi is turned off while doing this!
 
 ### Plugin configuration
-AFter installation, restart the Signal K server.
+After installation, restart the Signal K server.
 Go to Server > Plugin Config.
 
 TODO - Details goes here.
