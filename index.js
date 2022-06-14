@@ -88,7 +88,9 @@ module.exports = function (app) {
     iridium.open({
       debug: 1, //turn debugging on
       port: options.usbdevicepath,
-      flowControl: true, //set to false to disable flowControl on the SBD for 3-wire UART setups
+      flowControl: false, //set to false to disable flowControl on the SBD for 3-wire UART setups
+      maxAttempts: 15,
+      defaultTimeout: 90000, // 90 seconds general timeout for all commands
     });
 
     iridium.on('initialized', () => {
@@ -106,7 +108,7 @@ module.exports = function (app) {
     function iridiumsendpayloadmessage(){
     //TODO - Develop here the message package to be sent with a certain frequence.
     console.log('Virtual payload message for testing!');
-  }
+    }
 
     /*
     iridium.on('ringalert', function() {

@@ -16,7 +16,7 @@ Some examples of possible uses are found below:
 You will need a raspberry pi with SignalK installed along with a rockblock iridium 9603 to used it.
 
 ### The Rockblock Iridium modem
-Personally I am using the iridium modem found at the following [link]{https://www.sparkfun.com/products/14498} on Sparkfun. However there are other distributors to pick from. 
+Personally I am using the iridium modem found at the following [link](https://www.sparkfun.com/products/14498) on Sparkfun. However there are other distributors to pick from. 
 
 ![rockblock9603](../main/Pictures/rockblock9603.png)
 
@@ -27,7 +27,7 @@ We also strongly recomand to have a look on the Adafruit RockBLOCK Iridium Modem
 ### Connecting the Rockblock Iridium modem
 The GPIO pinout of the raspberry Pi is detailed [here](https://docs.microsoft.com/pt-br/windows/iot-core/learn-about-hardware/pinmappings/pinmappingsrpi). The GPIO pinout of the RockBLOCK 9603 and 9602 are presented [here](https://docs.rockblock.rock7.com/docs/connectors).
 
-All you need is connecting 4 pins. Hower, WARNING, the label of the pinout of the iridium modem ARE NOT usual (see bold below). You need to make sure Raspberry Pi is turned off while doing this!
+All you need is connecting 4 pins. Hower, **WARNING**, the label of the pinout of the iridium modem ARE NOT usual (see bold below). You need to make sure Raspberry Pi is turned off while doing this!
 
 ![rockblock9603pinout](../main/Pictures/rockblock9603pinout.png)
 
@@ -104,6 +104,7 @@ You can start by:
 * Typing `AT` and the modem will answer `OK`. If not check the connection, the port configuration as well as the baudrate.
 * The try `AT+CGMI` that should retrun `Iridium`.
 * And `AT+CGMM` that should give the modem model `IRIDIUM 9600 Family SBD Transceiver`.
+* For full specs run `AT+CGMR`.
 
 OK, fun part time! Let's try and send a message. If you aren't already connected to the RockBLOCK, see the previous section. You also need to have your service enabled by purchasing line rental and credits.
 
@@ -131,6 +132,30 @@ What is the meaning of the returned 6 values:
     * MT queued is a count of mobile terminated SBD messages waiting at the satelite to be transferred to the rocklock.
 
 Time now to pass to the Signalk server.
+
+#### Testing the Iridium signal strength
+The command: `AT+CSQ` list the supported signal strength indications. The response is in the form: `+CSQ:number`. Each number represents about 2 dB improvement in link margin over the previous value.
+* A reading of 0 is at or below the minimum receiver sensitivity level.
+* A reading of 1 indicates about 2 db of link margin.
+* A reading of 5 indicates 10 dB or more link margin.
+
+These are not calibrated output and provides relative information about the units receive signal, and not an absolute receiver level or even a calibrated signal to noise ratio.
+
+It is important to note that a signal strength response may not be immediately available, but will usually be received within two seconds of issuing the command. If the modem is in the process of acquiring the system, a delay in response of up to 50 seconds may be experienced. The command `AT+CSQF` form of the command returns immediately, reporting the last known calculated signal strength. Note that the signal strength returned by this command could be different from the current actual signal strength if the `AT+CSQ` form is used. This form is included for product developer application compatibility as it provides a fast response.
+
+#### Full Iridium system diagnostic
+The command `AT+CIER=1,1,1,1` enable a service that will monitor continously any changes in the status of the modem and the connection. The first digit enable the monitoring service. The second digit enable the signal quality monitoring. The third digit eanble the service availability monitoring, and the last one check the status of the antenna.
+
+How to read the results:
+* `+CIEV:0,x` -- x represent the signal strenght from 0 to 5.
+* `+CIEV:1,x` -- where x may take the following values:
+    * 0 - Network service is currently unavailable.
+    * 1 - Network service is available.
+* `+CIEV:2,x` -- where x may take the following values:
+    * 0 - No antenna fault detected, or antenna fault cleared.
+    * 1 - Antenna fault detected, further transmission impossible.
+
+If you only want to monitor the service availability, the `AT+CIER=1,0,1,0` is fine.
 
 ### Plugin configuration
 Install the plugin in signalk app store. After installation, restart the SignalK server. Go to Server and then Plugin Config.
