@@ -4,7 +4,7 @@
   "description": "SignalK node server plugin that send data with iridium rockblock 9603 on Raspberry-Pi",
   "license": "MIT",
   "homepage": "https://github.com/jdcaprace/signalk-raspberry-pi-rockblock9603#readme",
-  "version": "0.0.16",
+  "version": "0.0.17",
   "main": "index.js",
   "keywords": [
     "signalk-node-server-plugin"
