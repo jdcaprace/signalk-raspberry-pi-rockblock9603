@@ -27,7 +27,7 @@ module.exports = function (app) {
     type: 'object',
     properties: {
       messagesendingrate: {
-        title: "This is the message sending rate (in minutes)",
+        title: "This is the message sending rate (in minutes). WARNING: ROCKBLOCK CREDITS WILL BE CONSUMED.",
         type: 'number',
         default: 60
       },
@@ -39,12 +39,12 @@ module.exports = function (app) {
       },
       skpath1: {
         type: 'string',
-        title: 'SK1 - Signal K path of the navigation.',
+        title: 'Signal K path of the gps navigation position (latitude,longitude).',
         default: 'navigation.position',
       },
       active1: {
         type: 'boolean',
-        title: 'SK1 - Is active',
+        title: 'GPS position is active',
         default: true,
       },
       params: {
@@ -121,7 +121,7 @@ module.exports = function (app) {
     //ID, DateTime, lat, long, P1, P2, P3, P4, S1, A1, A2, A3, A4.
     
     //Shipid
-    var shipid = app.getSelfPath('name').value;
+    var shipid = app.getSelfPath('vessels.' + app.selfId + 'name').value;
     console.log('Shipid: ', shipid);
 
     //Date Time
@@ -164,7 +164,7 @@ module.exports = function (app) {
         app.debug(param);
         if (param.enable == true){
           if (app.getSelfPath(param.skpath)){
-            mainpayload = mainpayload + ',' + String(app.getSelfPath(param.skpath).value.tofixed(2));
+            mainpayload = mainpayload + ';' + String(app.getSelfPath(param.skpath).value.tofixed(2));
             console.log('Mainpayload: ', mainpayload);
           }
         }
