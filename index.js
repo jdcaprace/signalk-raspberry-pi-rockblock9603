@@ -137,7 +137,7 @@ module.exports = function (app) {
 
 
     //First parameter - Should be the position if it is intented to be used.
-		/*if(app.getSelfPath(options.skpath1)){
+		if(app.getSelfPath(options.skpath1)){
 			if(!tpv.sk1) tpv.sk1 = {};
 			tpv.sk1.value = app.getSelfPath(options.skpath1).value;
       if(typeof tpv.sk1.value == 'number'){tpv.sk1.value = tpv.sk1.value.toFixed(3);}
@@ -155,10 +155,10 @@ module.exports = function (app) {
         }
 			//tpv.sk1.timestamp =  Date.parse(app.getSelfPath(options.skpath1).timestamp);
       console.log('P1 (latlong): ', tpv.sk1.toprint);
-		}*/
+		}
 
     //If there is some aditional parameters to sent ...
-    /*var mainpayload = '';
+    var mainpayload = '';
     if (options.param && options.param.length > 0){
       options.params.forEach(param => {
         app.debug(param);
@@ -169,7 +169,7 @@ module.exports = function (app) {
           }
         }
       })
-    }*/
+    }
 
 
 
