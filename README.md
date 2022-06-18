@@ -144,7 +144,7 @@ These are not calibrated output and provides relative information about the unit
 It is important to note that a signal strength response may not be immediately available, but will usually be received within two seconds of issuing the command. If the modem is in the process of acquiring the system, a delay in response of up to 50 seconds may be experienced. The command `AT+CSQF` form of the command returns immediately, reporting the last known calculated signal strength. Note that the signal strength returned by this command could be different from the current actual signal strength if the `AT+CSQ` form is used. This form is included for product developer application compatibility as it provides a fast response.
 
 #### Full Iridium system diagnostic
-The command `AT+CIER=1,1,1,1` enable a service that will monitor continously any changes in the status of the modem and the connection. The first digit enable the monitoring service. The second digit enable the signal quality monitoring. The third digit eanble the service availability monitoring, and the last one check the status of the antenna.
+The command `AT+CIER=1,1,1,1` enable a service that will monitor continously any changes in the status of the modem and the connection. The first digit enable the monitoring service. The second digit enable the signal quality monitoring. The third digit enable the service availability monitoring, and the last one check the status of the antenna.
 
 How to read the results:
 * `+CIEV:0,x` -- x represent the signal strenght from 0 to 5.

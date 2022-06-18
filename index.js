@@ -37,9 +37,9 @@ module.exports = function (app) {
         description: 'Example: /dev/ttyUSB0 (USB) or /dev/ttyS0 (Serial) ',
         default: '/dev/ttyUSB0',
       },
-     /* skpath1: {
+      skpath1: {
         type: 'string',
-        title: 'SK1 - Signal K path of the 1st parameter',
+        title: 'SK1 - Signal K path of the navigation.',
         default: 'navigation.position',
       },
       active1: {
@@ -47,44 +47,35 @@ module.exports = function (app) {
         title: 'SK1 - Is active',
         default: true,
       },
-      skpath2: {
-        type: 'string',
-        title: 'SK2 - Signal K path of the 2nd parameter',
-        default: 'navigation.speedOverGround',
-      },
-      active2: {
-        type: 'boolean',
-        title: 'SK2 - Is active',
-        default: true,
-      },      
-      skpath3: {
-        type: 'string',
-        title: 'SK3 - Signal K path of the 3rd parameter',
-        default: 'navigation.courseOverGroundTrue',
-      },
-      active3: {
-        type: 'boolean',
-        title: 'SK3 - Is active',
-        default: true,
+      params: {
+        type: "array",
+        title: "SignalK path",
+        description: 'Path of the data to be sent by satellite comunication',
+        items: {
+          type: "object",
+          required: ['enable','skpath'],
+          properties: {
+            enable: {
+              type: 'boolean',
+              title: 'Enable this signalK path',
+              default: false
+            },
+            skpath: {
+              type: 'string',
+              title: 'SignalK path',
+              description: 'This is used to extract the value of the field you want to send with Iridium satellite. Support only numbers at the moment.',
+              default: 'environment.outside.temperature'
+            }
+          }
+        },
       },  
-      skpath4: {
-        type: 'string',
-        title: 'SK4 - Signal K path of the 4st parameter',
-        default: 'environment.outside.temperature',
-      },
-      active4: {
-        type: 'boolean',
-        title: 'SK4 - Is active',
-        default: true,
-      },  */     
     }
   }
 
   var unsubscribes = [];
 
   plugin.start = function (options) {
-    //let tpv = {};
-
+    
     iridium.open({
       debug: 1, //turn debugging on
       port: options.usbdevicepath,
@@ -95,7 +86,9 @@ module.exports = function (app) {
 
     iridium.on('initialized', () => {
       console.log('Iridium initialized');
-  
+      
+      iridium.enableContinousServiceAvailability();
+
       iridium.sendCompressedMessage('Hello world!', (err, momsn) => {
           console.log('Message Sent!');
       });
@@ -104,11 +97,6 @@ module.exports = function (app) {
     iridium.on('debug', log => {
       console.log('>>> ' + log);
     });
-
-    function iridiumsendpayloadmessage(){
-    //TODO - Develop here the message package to be sent with a certain frequence.
-    console.log('Virtual payload message for testing!');
-    }
 
     /*
     iridium.on('ringalert', function() {
@@ -121,30 +109,71 @@ module.exports = function (app) {
     });
     */
 
-    /*
+
+    function iridiumsendpayloadmessage(){
+    //TODO - Develop here the message package to be sent with a certain frequence.
+    console.log('Virtual payload message for testing!');
+    }
+
+    //let tpv = {};
+
+    //Creating the payload of the message to be sent by satellite
+    //ID, DateTime, lat, long, P1, P2, P3, P4, S1, A1, A2, A3, A4.
+    
+    //Shipid
+    var shipid = app.getSelfPath('name').value;
+    console.log('Shipid: ', shipid);
+
+    //Date Time
+    var today = new Date();
+    var DD = String(today.getDate()).padStart(2, '0');
+    var MM = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+    var YYYY = today.getFullYear();
+    var hh = today.getHours();
+    var mm = today.getMinutes();
+    var ss = today.getSeconds();
+    today = YYYY + MM + DD + hh + mm + ss;
+    console.log('Date-Time: ', today);
+
+
+    //First parameter - Should be the position if it is intented to be used.
 		if(app.getSelfPath(options.skpath1)){
 			if(!tpv.sk1) tpv.sk1 = {};
-      tpv.sk1.shortcode = options.shortcode1;
 			tpv.sk1.value = app.getSelfPath(options.skpath1).value;
-      if(options.offset1!=0){tpv.sk1.value = Number(tpv.sk1.value) + Number(options.offset1);}
-      if(options.multiplier1!=1){tpv.sk1.value = Number(tpv.sk1.value) * Number(options.multiplier1);}
       if(typeof tpv.sk1.value == 'number'){tpv.sk1.value = tpv.sk1.value.toFixed(3);}
       
         if(options.skpath1.includes('navigation.position')){
           tpv.sk1.value = app.getSelfPath(options.skpath1).value;
           var pos = JSON.parse(JSON.stringify(tpv.sk1.value));
           //console.log("pos: ",pos);
-          if(pos.longitude !== null && pos.latitude !== null)
-          {
-          tpv.sk1.value = 'LON: ' + String(pos.longitude.toFixed(6)) + ' LAT: ' + String(pos.latitude.toFixed(6));
+          if(pos.longitude !== null && pos.latitude !== null){
+            var lat = String(pos.latitude.toFixed(8));
+            var long = String(pos.longitude.toFixed(8));
+            tpv.sk1.value = lat + ";" + long;
           }
+          tpv.sk1.toprint = String(tpv.sk1.value);
         }
-
-			tpv.sk1.timestamp =  Date.parse(app.getSelfPath(options.skpath1).timestamp);
-      tpv.sk1.toprint = tpv.sk1.shortcode + ': ' + String(tpv.sk1.value);
+			//tpv.sk1.timestamp =  Date.parse(app.getSelfPath(options.skpath1).timestamp);
+      console.log('P1 (latlong): ', tpv.sk1.toprint);
 		}
 
+    //If there is some aditional parameters to sent ...
+    var mainpayload = '';
+    if (options.param && options.param.length > 0){
+      options.params.forEach(param => {
+        app.debug(param);
+        if (param.enable == true){
+          if (app.getSelfPath(param.skpath)){
+            mainpayload = mainpayload + ',' + String(app.getSelfPath(param.skpath).value.tofixed(2));
+            console.log('Mainpayload: ', mainpayload);
+          }
+        }
+      })
+    }
 
+
+
+/*
     if(app.getSelfPath(options.skpath2)){
 			if(!tpv.sk2) tpv.sk2 = {};
       tpv.sk2.shortcode = options.shortcode2;
@@ -200,5 +229,3 @@ module.exports = function (app) {
 
   return plugin;
 }
-
-

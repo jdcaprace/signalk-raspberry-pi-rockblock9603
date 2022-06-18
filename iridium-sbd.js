@@ -383,6 +383,7 @@ var iridium = {
     },
 
     waitForNetwork: function (callback, maxWait) {
+        iridium.log('Waiting for iridium network ...');
         iridium.ATS(
             'AT+CIER=1,1,0,0',
             /\+CIEV:0,[^0]/,
@@ -415,6 +416,11 @@ var iridium = {
     disableSignalMonitoring: function (callback) {
         iridium.ATS('AT+CIER=0,0,0,0', OK, ALL, callback, iridium.globals.simpleTimeout);
     },
+
+    enableContinousServiceAvailability: function (callback) {
+        iridium.ATS('AT+CIER=1,0,1,0', OK, ALL, callback, iridium.globals.simpleTimeout);
+    },
+
     getSignalQuality: function (callback) {
         iridium.ATS('AT+CSQ', OK, ALL, callback, iridium.globals.simpleTimeout);
     },
