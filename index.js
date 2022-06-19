@@ -160,6 +160,7 @@ module.exports = function (app) {
       }
 
       //If there is some aditional parameters to sent ...
+      console.log('options length: ',options.param.length.toString());
       var addpayload = '';
       if (options.param && options.param.length > 0){
         options.params.forEach(param => {
@@ -173,47 +174,8 @@ module.exports = function (app) {
         })
       }
 
-    } 
-
-/*
-    if(app.getSelfPath(options.skpath2)){
-			if(!tpv.sk2) tpv.sk2 = {};
-      tpv.sk2.shortcode = options.shortcode2;
-			tpv.sk2.value = app.getSelfPath(options.skpath2).value;
-      if(options.offset2!=0){tpv.sk2.value = Number(tpv.sk2.value) + Number(options.offset2);}
-      if(options.multiplier2!=1){tpv.sk2.value = Number(tpv.sk2.value) * Number(options.multiplier2);}
-      if(typeof tpv.sk2.value == 'number'){tpv.sk2.value = tpv.sk2.value.toFixed(3);}
-			tpv.sk2.timestamp =  Date.parse(app.getSelfPath(options.skpath2).timestamp);
-      tpv.sk2.toprint = tpv.sk2.shortcode + ': ' + String(tpv.sk2.value);
-		}
-    //console.log("tpv.sk2.value: ",tpv.sk2.value);
-
-    if(app.getSelfPath(options.skpath3)){
-			if(!tpv.sk3) tpv.sk3 = {};
-      tpv.sk3.shortcode = options.shortcode3;
-			tpv.sk3.value = app.getSelfPath(options.skpath3).value;
-      if(options.offset3!=0){tpv.sk3.value = Number(tpv.sk3.value) + Number(options.offset3);}
-      if(options.multiplier3!=1){tpv.sk3.value = Number(tpv.sk3.value) * Number(options.multiplier3);}
-      if(typeof tpv.sk3.value == 'number'){tpv.sk3.value = tpv.sk3.value.toFixed(3);}
-			tpv.sk3.timestamp =  Date.parse(app.getSelfPath(options.skpath3).timestamp);
-      tpv.sk3.toprint = tpv.sk3.shortcode + ': ' + String(tpv.sk3.value);
-		}
-    //console.log("tpv.sk3.value: ",tpv.sk3.value);
-
-    if(app.getSelfPath(options.skpath4)){
-			if(!tpv.sk4) tpv.sk4 = {};
-      tpv.sk4.shortcode = options.shortcode4;
-			tpv.sk4.value = app.getSelfPath(options.skpath4).value;
-      if(options.offset4!=0){tpv.sk4.value = Number(tpv.sk4.value) + Number(options.offset4);}
-      if(options.multiplier4!=1){tpv.sk4.value = Number(tpv.sk4.value) * Number(options.multiplier4);}
-      if(typeof tpv.sk4.value == 'number'){tpv.sk4.value = tpv.sk4.value.toFixed(3);}
-			tpv.sk4.timestamp =  Date.parse(app.getSelfPath(options.skpath4).timestamp);
-      tpv.sk4.toprint = tpv.sk4.shortcode + ': ' + String(tpv.sk4.value);
-		}
-    //console.log("tpv.sk4.value: ",tpv.sk4.value);
-*/
-
-    	     
+    }//End of constructing the message. 
+  	     
     timer = setInterval(iridiumsendpayloadmessage, options.messagesendingrate * 1000 * 60);
   }
 
