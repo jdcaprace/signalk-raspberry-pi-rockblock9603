@@ -160,9 +160,9 @@ module.exports = function (app) {
       }
 
       //If there is some aditional parameters to sent ...
-      console.log('options length: ',options.param.length.toString());
+      console.log('options length: ',options.params.length.toString());
       var addpayload = '';
-      if (options.param && options.param.length > 0){
+      if (options.params && options.params.length > 0){
         options.params.forEach(param => {
           app.debug(param);
           if (param.enable == true){
