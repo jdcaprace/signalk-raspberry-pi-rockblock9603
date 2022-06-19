@@ -109,69 +109,71 @@ module.exports = function (app) {
     });
     */
 
-
     function iridiumsendpayloadmessage(){
     //TODO - Develop here the message package to be sent with a certain frequence.
     console.log('Virtual payload message for testing!');
-    }
-
-    //let tpv = {};
-
-    //Creating the payload of the message to be sent by satellite
-    //ID, DateTime, lat, long, P1, P2, P3, P4, S1, A1, A2, A3, A4.
-    
-    //Shipid  
-    var shipid = app.getSelfPath('name');
-    console.log('Shipid: ', shipid);
-
-    //Date Time
-    var today = new Date();
-    var DD = String(today.getDate()).padStart(2, '0');
-    var MM = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
-    var YYYY = today.getFullYear();
-    var hh = today.getHours();
-    var mm = today.getMinutes();
-    var ss = today.getSeconds();
-    today = YYYY + MM + DD + hh + mm + ss;
-    console.log('Date-Time: ', today);
-
-
-    //First parameter - Should be the position if it is intented to be used.
-		if(app.getSelfPath(options.skpath1)){
-			if(!tpv.sk1) tpv.sk1 = {};
-			tpv.sk1.value = app.getSelfPath(options.skpath1).value;
-      if(typeof tpv.sk1.value == 'number'){tpv.sk1.value = tpv.sk1.value.toFixed(3);}
+     
+      //Creating the payload of the message to be sent by satellite
+      //ID, DateTime, lat, long, P1, P2, P3, P4, S1, A1, A2, A3, A4.
       
-        if(options.skpath1.includes('navigation.position')){
-          tpv.sk1.value = app.getSelfPath(options.skpath1).value;
-          var pos = JSON.parse(JSON.stringify(tpv.sk1.value));
-          console.log("Position: ",pos);
-          if(pos.longitude !== null && pos.latitude !== null){
-            var lat = String(pos.latitude.toFixed(8));
-            var long = String(pos.longitude.toFixed(8));
+      //Shipid  
+      var shipid = app.getSelfPath('name');
+      console.log('Shipid: ', shipid);
+
+      //Date Time
+      var today = new Date();
+      var DD = String(today.getDate()).padStart(2, '0');
+      var MM = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+      var YYYY = today.getFullYear();
+      var hh = today.getHours();
+      var mm = today.getMinutes();
+      var ss = today.getSeconds();
+      today = YYYY + MM + DD + hh + mm + ss;
+      console.log('Date-Time: ', today);
+
+      //First parameter is the position
+      let tpv = {};
+      if(app.getSelfPath(options.skpath1)){
+        if(!tpv.sk1) tpv.sk1 = {};
+        tpv.sk1.value = app.getSelfPath(options.skpath1).value;
+        if(typeof tpv.sk1.value == 'number'){tpv.sk1.value = tpv.sk1.value.toFixed(3);}
+        
+          if(options.skpath1.includes('navigation.position')){
+            tpv.sk1.value = app.getSelfPath(options.skpath1).value;
+            var pos = JSON.parse(JSON.stringify(tpv.sk1.value));
+            console.log("Position: ",pos);
+            
+            //If gps position not found return 999
+            var lat = '999';
+            var long = '999';
             tpv.sk1.value = lat + ";" + long;
+            
+            if(pos.longitude !== null && pos.latitude !== null){
+              lat = String(pos.latitude.toFixed(8));
+              long = String(pos.longitude.toFixed(8));
+              tpv.sk1.value = lat + ";" + long;
+            }
+            tpv.sk1.toprint = tpv.sk1.value;
           }
-          tpv.sk1.toprint = String(tpv.sk1.value);
-        }
-			//tpv.sk1.timestamp =  Date.parse(app.getSelfPath(options.skpath1).timestamp);
-      console.log('P1 (latlong): ', tpv.sk1.toprint);
-		}
+        //tpv.sk1.timestamp =  Date.parse(app.getSelfPath(options.skpath1).timestamp);
+        console.log('Lat and Long: ', tpv.sk1.toprint);
+      }
 
-    //If there is some aditional parameters to sent ...
-    var mainpayload = '';
-    if (options.param && options.param.length > 0){
-      options.params.forEach(param => {
-        app.debug(param);
-        if (param.enable == true){
-          if (app.getSelfPath(param.skpath)){
-            mainpayload = mainpayload + ';' + String(app.getSelfPath(param.skpath).value.tofixed(2));
-            console.log('Mainpayload: ', mainpayload);
+      //If there is some aditional parameters to sent ...
+      var addpayload = '';
+      if (options.param && options.param.length > 0){
+        options.params.forEach(param => {
+          app.debug(param);
+          if (param.enable == true){
+            if (app.getSelfPath(param.skpath)){
+              addpayload = addpayload + ';' + String(app.getSelfPath(param.skpath).value.tofixed(2));
+              console.log('Payload: ', addpayload);
+            }
           }
-        }
-      })
-    }
+        })
+      }
 
-
+    } 
 
 /*
     if(app.getSelfPath(options.skpath2)){
