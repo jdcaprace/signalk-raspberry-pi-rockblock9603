@@ -153,15 +153,12 @@ module.exports = function (app) {
   	
 
     function sendingmessage(){
+      var txtmessage = buildingpayloadmessage();
+      console.log('txtmessage: ', txtmessage);
 
       iridium.on('initialized', () => {
         console.log('Iridium initialized');
-
-        var txtmessage = buildingpayloadmessage();
-        console.log('txtmessage: ', txtmessage);
-
         iridium.enableContinousServiceAvailability();
-
         //Message is compressed with zlib.deflateRaw. To uncompress use the zlib.inflateRaw
         iridium.sendCompressedMessage(txtmessage, (err, momsn) => {
             console.log('Message Sent!');
