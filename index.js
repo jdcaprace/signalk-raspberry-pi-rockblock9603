@@ -91,7 +91,7 @@ module.exports = function (app) {
       
       //Shipid  
       var shipid = app.getSelfPath('name');
-      console.log('Shipid: ', shipid);
+      //console.log('Shipid: ', shipid);
 
       //Date Time
       var today = new Date();
@@ -102,14 +102,14 @@ module.exports = function (app) {
       var mm = today.getMinutes();
       var ss = today.getSeconds();
       today = YYYY + MM + DD + hh + mm + ss;
-      console.log('Date-Time: ', today);
+      //console.log('Date-Time: ', today);
 
       //First parameter is the position
       let tpv = {};
       if(app.getSelfPath(options.skpath1)){
         if(!tpv.sk1) tpv.sk1 = {};
         tpv.sk1.value = app.getSelfPath(options.skpath1).value;
-        if(typeof tpv.sk1.value == 'number'){tpv.sk1.value = tpv.sk1.value.toFixed(3);}
+        //if(typeof tpv.sk1.value == 'number'){tpv.sk1.value = tpv.sk1.value.toFixed(3);}
         
           if(options.skpath1.includes('navigation.position')){
             tpv.sk1.value = app.getSelfPath(options.skpath1).value;
@@ -127,21 +127,21 @@ module.exports = function (app) {
               tpv.sk1.value = lat + ";" + long;
             }
             tpv.sk1.toprint = tpv.sk1.value;
-          }
+          //}
         //tpv.sk1.timestamp =  Date.parse(app.getSelfPath(options.skpath1).timestamp);
-        console.log('Lat and Long: ', tpv.sk1.toprint);
+        //console.log('Lat and Long: ', tpv.sk1.toprint);
       }
 
       //If there is some aditional parameters to sent ...
-      console.log('options length: ',options.params.length.toString());
+      //console.log('options length: ',options.params.length.toString());
       var addpayload = '';
       if (options.params && options.params.length > 0){
         options.params.forEach(param => {
-          app.debug(param);
+          //app.debug(param);
           if (param.enable == true){
-            if (app.getSelfPath(param.skpath)){
+            if (app.getSelfPath(param.skpath) && app.getSelfPath(param.skpath).value !== null){
               addpayload = addpayload + ';' + String(app.getSelfPath(param.skpath).value.toFixed(2));
-              console.log('Payload: ', addpayload);
+              //console.log('Payload: ', addpayload);
             }
           }
         })
