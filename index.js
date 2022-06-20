@@ -141,7 +141,7 @@ module.exports = function (app) {
           if(options.skpath1.includes('navigation.position')){
             tpv.sk1.value = app.getSelfPath(options.skpath1).value;
             var pos = JSON.parse(JSON.stringify(tpv.sk1.value));
-            console.log("Position: ",pos);
+            //console.log("Position: ",pos);
             
             //If gps position not found return 999
             var lat = '999';
@@ -167,7 +167,7 @@ module.exports = function (app) {
           app.debug(param);
           if (param.enable == true){
             if (app.getSelfPath(param.skpath)){
-              addpayload = addpayload + ';' + String(app.getSelfPath(param.skpath).value.tofixed(2));
+              addpayload = addpayload + ';' + String(app.getSelfPath(param.skpath).value.toFixed(2));
               console.log('Payload: ', addpayload);
             }
           }
