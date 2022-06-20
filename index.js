@@ -127,7 +127,7 @@ module.exports = function (app) {
               tpv.sk1.value = lat + ";" + long;
             }
             tpv.sk1.toprint = tpv.sk1.value;
-          //}
+          }
         //tpv.sk1.timestamp =  Date.parse(app.getSelfPath(options.skpath1).timestamp);
         //console.log('Lat and Long: ', tpv.sk1.toprint);
       }
