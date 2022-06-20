@@ -166,6 +166,8 @@ var iridium = {
     sendCompressedMessage: function (text, callback) {
         zlib.deflateRaw(new Buffer(text, 'utf-8'), function (err, buffer) {
             if (!err) {
+                iridium.log('Message to be compressed: '+ text);
+                iridium.log('Compressed message: '+ buffer.toString('utf8'));
                 iridium.log('Text compressed, initial length ' + text.length + ', compressed length ' + buffer.length);
 
                 iridium.c_attempt = 0;

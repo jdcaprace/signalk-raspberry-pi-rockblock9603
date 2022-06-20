@@ -27,14 +27,15 @@ module.exports = function (app) {
     type: 'object',
     properties: {
       messagesendingrate: {
-        title: "This is the message sending rate (in minutes). WARNING: ROCKBLOCK CREDITS WILL BE CONSUMED.",
+        title: "This is the message sending rate (in minutes).",
+        description: 'WARNING: ROCKBLOCK CREDITS WILL BE CONSUMED!',
         type: 'number',
         default: 60
       },
       usbdevicepath: {
         type: 'string',
         title: 'USB device path',
-        description: 'Example: /dev/ttyUSB0 (USB) or /dev/ttyS0 (Serial) ',
+        description: 'Example: /dev/ttyUSB0 (USB) or /dev/ttyS0 (Serial)',
         default: '/dev/ttyUSB0',
       },
       skpath1: {
@@ -84,37 +85,9 @@ module.exports = function (app) {
       defaultTimeout: 90000, // 90 seconds general timeout for all commands
     });
 
-    iridium.on('initialized', () => {
-      console.log('Iridium initialized');
-      
-      iridium.enableContinousServiceAvailability();
-
-      iridium.sendCompressedMessage('Hello world!', (err, momsn) => {
-          console.log('Message Sent!');
-      });
-    });
-
-    iridium.on('debug', log => {
-      console.log('>>> ' + log);
-    });
-
-    /*
-    iridium.on('ringalert', function() {
-      console.log("New incoming message event!");
-      iridium.mailboxCheck();
-    });
-     
-    iridium.on('newmessage', function(message, queued) {
-      console.log("Received new message ", message);
-    });
-    */
-
-    function iridiumsendpayloadmessage(){
-    //TODO - Develop here the message package to be sent with a certain frequence.
-    console.log('Virtual payload message for testing!');
-     
-      //Creating the payload of the message to be sent by satellite
-      //ID, DateTime, lat, long, P1, P2, P3, P4, S1, A1, A2, A3, A4.
+    function buildingpayloadmessage(){
+      //Creating the payload of the message to be sent to the satellite
+      //Format will be CSV as: Name; DateTime; lat; long; P1; P2; P3; ...
       
       //Shipid  
       var shipid = app.getSelfPath('name');
@@ -173,10 +146,46 @@ module.exports = function (app) {
           }
         })
       }
-
+      var message = shipid + ';' + today + ';' + tpv.sk1.toprint + addpayload;
+      console.log('Message: ', message);
+      return message;
     }//End of constructing the message. 
-  	     
-    timer = setInterval(iridiumsendpayloadmessage, options.messagesendingrate * 1000 * 60);
+  	
+
+    function sendingmessage(){
+
+      iridium.on('initialized', () => {
+        console.log('Iridium initialized');
+        
+        iridium.enableContinousServiceAvailability();
+
+        var txtmessage = buildingpayloadmessage();
+        console.log('txtmessage: ', txtmessage);
+
+        //Message is compressed with zlib.deflateRaw. To uncompress use the zlib.inflateRaw
+        iridium.sendCompressedMessage(txtmessage, (err, momsn) => {
+            console.log('Message Sent!');
+        });
+
+      });
+    }
+
+    iridium.on('debug', log => {
+      console.log('>>> ' + log);
+    });
+
+    /*
+    iridium.on('ringalert', function() {
+      console.log("New incoming message event!");
+      iridium.mailboxCheck();
+    });
+     
+    iridium.on('newmessage', function(message, queued) {
+      console.log("Received new message ", message);
+    });
+    */
+
+    timer = setInterval(sendingmessage, options.messagesendingrate * 1000 * 60);
   }
 
  
