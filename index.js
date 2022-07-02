@@ -175,12 +175,14 @@ module.exports = function (app) {
         console.log('Iridium initialized');
         iridium.enableContinousServiceAvailability();
 
-        if (options.iscompressed){
+        if (options.iscompressed === true){
+          console.log('Trying to send compressed message!');
           //Message is compressed with zlib.deflateRaw. To uncompress use the zlib.inflateRaw
           iridium.sendCompressedMessage(txtmessage, (err, momsn) => {
             console.log('Compressed Message Sent!');
           });
         } else {
+          console.log('Trying to send message!');
           iridium.sendMessage(txtmessage, (err, momsn) => {
             console.log('Message Sent!');
           });
@@ -193,16 +195,17 @@ module.exports = function (app) {
       console.log('>>> ' + log);
     });
 
-    /*
+    
     iridium.on('ringalert', function() {
       console.log("New incoming message event!");
       iridium.mailboxCheck();
     });
      
     iridium.on('newmessage', function(message, queued) {
-      console.log("Received new message ", message);
+      console.log("Received new message, thus I will send my payload!", message);
+      sendingmessage();
     });
-    */
+    
 
     timer = setInterval(sendingmessage, options.messagesendingrate * 1000 * 60);
   }
