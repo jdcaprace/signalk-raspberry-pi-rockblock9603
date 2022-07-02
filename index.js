@@ -38,6 +38,12 @@ module.exports = function (app) {
         description: 'Example: /dev/ttyUSB0 (USB) or /dev/ttyS0 (Serial)',
         default: '/dev/ttyUSB0',
       },
+      iscompressed: {
+        type: 'boolean',
+        title: 'The message to be sent will be compressed if checked.',
+        description: 'Message is compressed with zlib.deflateRaw. To uncompress use the zlib.inflateRaw.',
+        default: false,
+      },
       skpath1: {
         type: 'string',
         title: 'Signal K path of the gps navigation position (latitude,longitude).',
@@ -151,6 +157,15 @@ module.exports = function (app) {
       return message;
     }//End of constructing the message. 
   	
+    /*
+    iridium.on('initialized', () => {
+      console.log('Iridium initialized');
+  
+      iridium.sendCompressedMessage('Hello world!', (err, momsn) => {
+          console.log('Message Sent!');
+      });
+    });
+    */
 
     function sendingmessage(){
       var txtmessage = buildingpayloadmessage();
@@ -159,10 +174,17 @@ module.exports = function (app) {
       iridium.on('initialized', () => {
         console.log('Iridium initialized');
         iridium.enableContinousServiceAvailability();
-        //Message is compressed with zlib.deflateRaw. To uncompress use the zlib.inflateRaw
-        iridium.sendCompressedMessage(txtmessage, (err, momsn) => {
+
+        if (options.iscompressed){
+          //Message is compressed with zlib.deflateRaw. To uncompress use the zlib.inflateRaw
+          iridium.sendCompressedMessage(txtmessage, (err, momsn) => {
+            console.log('Compressed Message Sent!');
+          });
+        } else {
+          iridium.sendMessage(txtmessage, (err, momsn) => {
             console.log('Message Sent!');
-        });
+          });
+        }
 
       });
     }
