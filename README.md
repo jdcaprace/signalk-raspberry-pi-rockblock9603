@@ -3,7 +3,7 @@
 
 This plugin is desigmed to send data from the SignalK server via Iridium SBD (Short Burst Data).
 
-The plugin has been developped for with RockBlock Iridium 9603 modem but also works with RockBlock Iridium 9602.
+The plugin has been developped for RockBlock Iridium 9603 modem but also works with RockBlock Iridium 9602.
 
 This plugin can be downloaded via the SignalK application.
 

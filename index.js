@@ -153,7 +153,7 @@ module.exports = function (app) {
         })
       }
       var message = shipid + ';' + today + ';' + tpv.sk1.toprint + addpayload;
-      console.log('Message: ', message);
+      //console.log('Message: ', message);
       return message;
     }//End of constructing the message. 
   	
@@ -167,34 +167,36 @@ module.exports = function (app) {
     });
     */
 
-    function sendingmessage(){
+    function repeatsendingmessage(){
+      console.log('Enter in repeatsendingmessage.');
       var txtmessage = buildingpayloadmessage();
       console.log('txtmessage: ', txtmessage);
 
-      iridium.on('initialized', () => {
-        console.log('Iridium initialized');
-        iridium.enableContinousServiceAvailability();
-
-        if (options.iscompressed === true){
-          console.log('Trying to send compressed message!');
-          //Message is compressed with zlib.deflateRaw. To uncompress use the zlib.inflateRaw
-          iridium.sendCompressedMessage(txtmessage, (err, momsn) => {
-            console.log('Compressed Message Sent!');
-          });
-        } else {
-          console.log('Trying to send message!');
-          iridium.sendMessage(txtmessage, (err, momsn) => {
-            console.log('Message Sent!');
-          });
-        }
-
-      });
+      if (options.iscompressed == true){
+        console.log('Trying to send compressed message!');
+        //Message is compressed with zlib.deflateRaw. To uncompress use the zlib.inflateRaw
+        iridium.sendCompressedMessage(txtmessage, (err, momsn) => {
+          console.log('Compressed Message Sent!');
+        });
+      } else {
+        console.log('Trying to send message!');
+        iridium.sendMessage(txtmessage, (err, momsn) => {
+          console.log('Message Sent!');
+        });
+      }
+      
+      setTimeout(repeatsendingmessage, options.messagesendingrate * 1000 * 60);
     }
 
+    iridium.on('initialized', () => {
+      console.log('Iridium initialized!');
+      iridium.enableContinousServiceAvailability();
+      repeatsendingmessage();
+    });
+    
     iridium.on('debug', log => {
       console.log('>>> ' + log);
     });
-
     
     iridium.on('ringalert', function() {
       console.log("New incoming message event!");
@@ -202,12 +204,28 @@ module.exports = function (app) {
     });
      
     iridium.on('newmessage', function(message, queued) {
-      console.log("Received new message, thus I will send my payload!", message);
-      sendingmessage();
+      //When a message is received by rockblock it means that is a request to send urgently data.
+      console.log("Received the new message to request data, thus I will send my payload: >", message);
+      //Before sending you can check here the content of the message if you want (security)
+      
+      var txtmessage = buildingpayloadmessage();
+      console.log('txtmessage: ', txtmessage);
+      if (options.iscompressed == true){
+        console.log('Trying to send compressed message!');
+        //Message is compressed with zlib.deflateRaw. To uncompress use the zlib.inflateRaw
+        iridium.sendCompressedMessage(txtmessage, (err, momsn) => {
+          console.log('Compressed Message Sent!');
+        });
+      } else {
+        console.log('Trying to send message!');
+        iridium.sendMessage(txtmessage, (err, momsn) => {
+          console.log('Message Sent!');
+        });
+      }
+
     });
     
-
-    timer = setInterval(sendingmessage, options.messagesendingrate * 1000 * 60);
+    //timer = setInterval(sendingmessage, options.messagesendingrate * 1000 * 60);
   }
 
  
