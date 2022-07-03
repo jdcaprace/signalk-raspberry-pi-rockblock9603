@@ -112,6 +112,7 @@ module.exports = function (app) {
 
       //First parameter is the position
       let tpv = {};
+      var toprint = 'default';
       if(app.getSelfPath(options.skpath1)){
         if(!tpv.sk1) tpv.sk1 = {};
         tpv.sk1.value = app.getSelfPath(options.skpath1).value;
@@ -132,10 +133,10 @@ module.exports = function (app) {
               long = String(pos.longitude.toFixed(8));
               tpv.sk1.value = lat + ";" + long;
             }
-            tpv.sk1.toprint = tpv.sk1.value;
+            toprint = tpv.sk1.value;
           }
         //tpv.sk1.timestamp =  Date.parse(app.getSelfPath(options.skpath1).timestamp);
-        //console.log('Lat and Long: ', tpv.sk1.toprint);
+        //console.log('Lat and Long: ', toprint);
       }
 
       //If there is some aditional parameters to sent ...
@@ -152,7 +153,7 @@ module.exports = function (app) {
           }
         })
       }
-      var message = shipid + ';' + today + ';' + tpv.sk1.toprint + addpayload;
+      var message = shipid + ';' + today + ';' + toprint + addpayload;
       //console.log('Message: ', message);
       return message;
     }//End of constructing the message. 
