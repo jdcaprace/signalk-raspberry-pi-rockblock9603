@@ -108,8 +108,13 @@ module.exports = function (app) {
       //First parameter is the position
       let tpv = {};
       var toprint = '';
+      //let uuid = app.getSelfPath('uuid');
+      //console.log('uuid: ',uuid);
+      //let posi = app.getSelfPath('navigation.position');
+      //console.log('posi: ',posi);
+
       if(app.getSelfPath(options.positionskpath)){
-        console.log('Entering in positionskpath.');
+        //console.log('Entering in positionskpath.');
         if(!tpv.sk1) tpv.sk1 = {};
         tpv.sk1.value = app.getSelfPath(options.positionskpath).value;
         //if(typeof tpv.sk1.value == 'number'){tpv.sk1.value = tpv.sk1.value.toFixed(3);}
@@ -117,7 +122,7 @@ module.exports = function (app) {
           if(options.positionskpath.includes('navigation.position')){
             tpv.sk1.value = app.getSelfPath(options.positionskpath).value;
             var pos = JSON.parse(JSON.stringify(tpv.sk1.value));
-            console.log("Position: ",pos);
+            //console.log("Position: ",pos);
             
             //If gps position not found return 999
             var lat = '999';
@@ -132,7 +137,7 @@ module.exports = function (app) {
             toprint = tpv.sk1.value;
           }
         //tpv.sk1.timestamp =  Date.parse(app.getSelfPath(options.positionskpath).timestamp);
-        console.log('Lat and Long: ', toprint);
+        //console.log('Lat and Long: ', toprint);
       }
 
       //If there is some aditional parameters to sent ...
@@ -222,7 +227,7 @@ module.exports = function (app) {
 
     });
     
-    timer = setInterval(buildingpayloadmessage, 1000 * 5);
+    //timer = setInterval(buildingpayloadmessage, 1000 * 5);
   }
 
  
