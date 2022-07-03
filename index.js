@@ -107,8 +107,9 @@ module.exports = function (app) {
 
       //First parameter is the position
       let tpv = {};
-      //var toprint = '';
+      var toprint = '';
       if(app.getSelfPath(options.positionskpath)){
+        console.log('Entering in positionskpath.');
         if(!tpv.sk1) tpv.sk1 = {};
         tpv.sk1.value = app.getSelfPath(options.positionskpath).value;
         //if(typeof tpv.sk1.value == 'number'){tpv.sk1.value = tpv.sk1.value.toFixed(3);}
