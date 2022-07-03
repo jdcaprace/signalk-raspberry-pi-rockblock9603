@@ -85,16 +85,7 @@ module.exports = function (app) {
       maxAttempts: 15,
       defaultTimeout: 90000, // 90 seconds general timeout for all commands
     });
-
-    
-    function wait(sec) {
-      const date = Date.now();
-      let currentDate = null;
-      do {
-        currentDate = Date.now();
-      } while (currentDate - date < sec*1000);
-    }
-    
+  
     function buildingpayloadmessage(){
       //Creating the payload of the message to be sent to the satellite
       //Format will be CSV as: Name; DateTime; lat; long; P1; P2; P3; ...
@@ -180,8 +171,6 @@ module.exports = function (app) {
 
     function repeatsendingmessage(){
       console.log('Enter in repeatsendingmessage.');
-      console.log('Waiting 1 minute to get data sensors stabilized ...');
-      wait(60);
       var txtmessage = buildingpayloadmessage();
       console.log('txtmessage: ', txtmessage);
 
@@ -203,8 +192,6 @@ module.exports = function (app) {
 
     function sendingmessage(){
       console.log('Enter in sendingmessage.');
-      console.log('Waiting 1 minute to get data sensors stabilized ...');
-      wait(60);
       var txtmessage = buildingpayloadmessage();
       console.log('txtmessage: ', txtmessage);
 
@@ -236,8 +223,8 @@ module.exports = function (app) {
     
     iridium.on('ringalert', function() {
       console.log("New incoming message event! Thus I will send my payload!");
-      //iridium.mailboxCheck();
       sendingmessage();
+      //iridium.mailboxCheck();
     });
     
     /*
