@@ -86,6 +86,15 @@ module.exports = function (app) {
       defaultTimeout: 90000, // 90 seconds general timeout for all commands
     });
 
+    
+    function wait(sec) {
+      const date = Date.now();
+      let currentDate = null;
+      do {
+        currentDate = Date.now();
+      } while (currentDate - date < sec*1000);
+    }
+    
     function buildingpayloadmessage(){
       //Creating the payload of the message to be sent to the satellite
       //Format will be CSV as: Name; DateTime; lat; long; P1; P2; P3; ...
@@ -171,6 +180,8 @@ module.exports = function (app) {
 
     function repeatsendingmessage(){
       console.log('Enter in repeatsendingmessage.');
+      console.log('Waiting 1 minute to get data sensors stabilized ...');
+      wait(60);
       var txtmessage = buildingpayloadmessage();
       console.log('txtmessage: ', txtmessage);
 
@@ -190,28 +201,13 @@ module.exports = function (app) {
       setTimeout(repeatsendingmessage, options.messagesendingrate * 1000 * 60);
     }
 
-    iridium.on('initialized', () => {
-      console.log('Iridium initialized!');
-      iridium.enableContinousServiceAvailability();
-      repeatsendingmessage();
-    });
-    
-    iridium.on('debug', log => {
-      console.log('>>> ' + log);
-    });
-    
-    iridium.on('ringalert', function() {
-      console.log("New incoming message event!");
-      iridium.mailboxCheck();
-    });
-     
-    iridium.on('newmessage', function(message, queued) {
-      //When a message is received by rockblock it means that is a request to send urgently data.
-      console.log("Received the new message to request data, thus I will send my payload: >", message);
-      //Before sending you can check here the content of the message if you want (security)
-      
+    function sendingmessage(){
+      console.log('Enter in sendingmessage.');
+      console.log('Waiting 1 minute to get data sensors stabilized ...');
+      wait(60);
       var txtmessage = buildingpayloadmessage();
       console.log('txtmessage: ', txtmessage);
+
       if (options.iscompressed == true){
         console.log('Trying to send compressed message!');
         //Message is compressed with zlib.deflateRaw. To uncompress use the zlib.inflateRaw
@@ -224,8 +220,34 @@ module.exports = function (app) {
           console.log('Message Sent!');
         });
       }
+    }
 
+
+
+    iridium.on('initialized', () => {
+      console.log('Iridium initialized!');
+      iridium.enableContinousServiceAvailability();
+      repeatsendingmessage();
     });
+    
+    iridium.on('debug', log => {
+      console.log('>>> ' + log);
+    });
+    
+    iridium.on('ringalert', function() {
+      console.log("New incoming message event! Thus I will send my payload!");
+      //iridium.mailboxCheck();
+      sendingmessage();
+    });
+    
+    /*
+    iridium.on('newmessage', function(message, queued) {
+      //When a message is received by rockblock it means that is a request to send urgently data.
+      console.log("Received the new message to request data, thus I will send my payload: >", message);
+      //Before sending you can check here the content of the message if you want (security)
+      sendingmessage();
+    });
+    */
     
     //timer = setInterval(buildingpayloadmessage, 1000 * 5);
   }
