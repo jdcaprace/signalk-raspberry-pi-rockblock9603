@@ -169,27 +169,6 @@ module.exports = function (app) {
     });
     */
 
-    function repeatsendingmessage(){
-      console.log('Enter in repeatsendingmessage.');
-      var txtmessage = buildingpayloadmessage();
-      console.log('txtmessage: ', txtmessage);
-
-      if (options.iscompressed == true){
-        console.log('Trying to send compressed message!');
-        //Message is compressed with zlib.deflateRaw. To uncompress use the zlib.inflateRaw
-        iridium.sendCompressedMessage(txtmessage, (err, momsn) => {
-          console.log('Compressed Message Sent!');
-        });
-      } else {
-        console.log('Trying to send message!');
-        iridium.sendMessage(txtmessage, (err, momsn) => {
-          console.log('Message Sent!');
-        });
-      }
-      
-      setTimeout(repeatsendingmessage, options.messagesendingrate * 1000 * 60);
-    }
-
     function sendingmessage(){
       console.log('Enter in sendingmessage.');
       var txtmessage = buildingpayloadmessage();
@@ -209,7 +188,10 @@ module.exports = function (app) {
       }
     }
 
-
+    function repeatsendingmessage(){
+      sendingmessage();
+      setTimeout(repeatsendingmessage, options.messagesendingrate * 1000 * 60);
+    }
 
     iridium.on('initialized', () => {
       console.log('Iridium initialized!');
@@ -218,7 +200,7 @@ module.exports = function (app) {
     });
     
     iridium.on('debug', log => {
-      console.log('>>> ' + log);
+      console.log('IRIDIUM>>> ' + log);
     });
     
     iridium.on('ringalert', function() {

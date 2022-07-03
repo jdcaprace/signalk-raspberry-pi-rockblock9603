@@ -564,11 +564,21 @@ var iridium = {
 
                     //disableFlowControl(function(){
 
+                    /*
+                    //To read incoming messages with binary message function.
                     iridium.readBinaryMessage(mtqueued, function () {
                         iridium.clearMOBuffers(function (err) {
                             iridium.runCallback(callback, [err, momsn]);
                         });
                     });
+                    */
+
+                    iridium.readMessage(mtqueued, function () {
+                        iridium.clearMOBuffers(function (err) {
+                            iridium.runCallback(callback, [err, momsn]);
+                        });
+                    });
+
 
                     //});
 
