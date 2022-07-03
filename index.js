@@ -189,6 +189,7 @@ module.exports = function (app) {
     }
 
     function repeatsendingmessage(){
+      console.log('Enter in repeatsendingmessage.');
       sendingmessage();
       setTimeout(repeatsendingmessage, options.messagesendingrate * 1000 * 60);
     }
@@ -204,19 +205,18 @@ module.exports = function (app) {
     });
     
     iridium.on('ringalert', function() {
-      console.log("New incoming message event! Thus I will send my payload!");
-      sendingmessage();
-      //iridium.mailboxCheck();
+      console.log("New incoming message event!");
+      iridium.mailboxCheck();
     });
     
-    /*
+    
     iridium.on('newmessage', function(message, queued) {
       //When a message is received by rockblock it means that is a request to send urgently data.
       console.log("Received the new message to request data, thus I will send my payload: >", message);
-      //Before sending you can check here the content of the message if you want (security)
+      //Before sending you can check here the content of the message if you want (security).
       sendingmessage();
     });
-    */
+    
     
     //timer = setInterval(buildingpayloadmessage, 1000 * 5);
   }

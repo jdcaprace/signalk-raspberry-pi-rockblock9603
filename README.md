@@ -163,14 +163,14 @@ Install the plugin in signalk app store. After installation, restart the SignalK
 The following parameters can be configured:
 * The sending rate of the Iridium SBD messages in minutes. WARNING - ROCKBLOCK CREDITS WILL BE CONSUMED!
 * The USB device path. You should tipically choose between /dev/ttyUSB0 (USB) or /dev/ttyS0 (Serial).
-* The SignalK path of your position can be reported using 'navigation.position'.
-* Any other information you want to sent in the message can be configured here.
+* Option to compress the message in a binary form. If active the message is send compressed, otherwise the message is sent in plain text. The compressing algorithm that is used is `zlib.deflateRaw`. To uncompress use the `zlib.inflateRaw` see [zlib](https://www.zlib.net/) for more details.
+* The SignalK path of your position that is going to be reported, e.g., use 'navigation.position'.
+* Any other information you want to sent in the message can be configured here using signalK paths.
 
 Note that the message is going to have the following pattern:
 `"Name;Timestamp;Latitude;Longitude;P1;P2;P3; etc."`
 
-It is also important to understand that the message payload is going to be sent compressed in a binary form.
-The compressing algorithm that is used is `zlib.deflateRaw`. To uncompress use the `zlib.inflateRaw` see [zlib](https://www.zlib.net/) for more details.
+If you want to request the rockblock to send immediatly the payload in case of emmergency you can send a TEXT MT message to the rockblock. He will reply sending immediatly the data that are required.
 
 ## Authors
 * **Jean-David Caprace** - *Author of this plugin*
