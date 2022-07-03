@@ -44,15 +44,10 @@ module.exports = function (app) {
         description: 'Message is compressed with zlib.deflateRaw. To uncompress use the zlib.inflateRaw.',
         default: false,
       },
-      skpath1: {
+      positionskpath: {
         type: 'string',
         title: 'Signal K path of the gps navigation position (latitude,longitude).',
         default: 'navigation.position',
-      },
-      active1: {
-        type: 'boolean',
-        title: 'GPS position is active',
-        default: true,
       },
       params: {
         type: "array",
@@ -112,14 +107,14 @@ module.exports = function (app) {
 
       //First parameter is the position
       let tpv = {};
-      var toprint = 'default';
-      if(app.getSelfPath(options.skpath1)){
+      //var toprint = '';
+      if(app.getSelfPath(options.positionskpath)){
         if(!tpv.sk1) tpv.sk1 = {};
-        tpv.sk1.value = app.getSelfPath(options.skpath1).value;
+        tpv.sk1.value = app.getSelfPath(options.positionskpath).value;
         //if(typeof tpv.sk1.value == 'number'){tpv.sk1.value = tpv.sk1.value.toFixed(3);}
         
-          if(options.skpath1.includes('navigation.position')){
-            tpv.sk1.value = app.getSelfPath(options.skpath1).value;
+          if(options.positionskpath.includes('navigation.position')){
+            tpv.sk1.value = app.getSelfPath(options.positionskpath).value;
             var pos = JSON.parse(JSON.stringify(tpv.sk1.value));
             console.log("Position: ",pos);
             
@@ -135,7 +130,7 @@ module.exports = function (app) {
             }
             toprint = tpv.sk1.value;
           }
-        //tpv.sk1.timestamp =  Date.parse(app.getSelfPath(options.skpath1).timestamp);
+        //tpv.sk1.timestamp =  Date.parse(app.getSelfPath(options.positionskpath).timestamp);
         console.log('Lat and Long: ', toprint);
       }
 
@@ -226,7 +221,7 @@ module.exports = function (app) {
 
     });
     
-    //timer = setInterval(sendingmessage, options.messagesendingrate * 1000 * 60);
+    timer = setInterval(buildingpayloadmessage, 1000 * 5);
   }
 
  
