@@ -27,7 +27,13 @@ module.exports = function (app) {
     type: 'object',
     properties: {
       messagesendingrate: {
-        title: "This is the message sending rate (in minutes).",
+        title: "This is the REGULAR message sending rate (in minutes).",
+        description: 'WARNING: ROCKBLOCK CREDITS WILL BE CONSUMED!',
+        type: 'number',
+        default: 720
+      },
+      emergencymessagesendingrate: {
+        title: "This is the EMERGENCY message sending rate (in minutes).",
         description: 'WARNING: ROCKBLOCK CREDITS WILL BE CONSUMED!',
         type: 'number',
         default: 60
@@ -65,12 +71,41 @@ module.exports = function (app) {
             skpath: {
               type: 'string',
               title: 'SignalK path',
-              description: 'This is used to extract the value of the field you want to send with Iridium satellite. Support only numbers at the moment.',
+              description: 'This is used to extract the value of the field you want to send with Iridium satellite. Support only numbers and alarm states of the signalk.zones plugin at the moment.',
               default: 'environment.outside.temperature'
             }
           }
         },
-      },  
+      },
+      triggers: {
+        type: "array",
+        title: "Triggers to send messages in case of anormal events",
+        description: 'Path of the signalk zones to be used as triggers. Warning: require installing plugin signalk-zones.',
+        items: {
+          type: "object",
+          required: ['enable','skpath', 'state'],
+          properties: {
+            enable: {
+              type: 'boolean',
+              title: 'Enable this signalK path',
+              default: false
+            },
+            skpath: {
+              type: 'string',
+              title: 'SignalK path',
+              description: 'This is used to check the state of the alarm (see plugin signalk-zones) to trigger an emergency message by Iridium.',
+              default: 'notifications.navigation.speedOverGround'
+            },
+            state: {
+              type: 'string',
+              title: 'Alarm state',
+              description: 'The alarm state when the value is in this zone.',
+              default: 'normal',
+              enum: ['normal', 'alert', 'warn', 'alarm', 'emergency']
+            }
+          }
+        },
+      },
     }
   }
 
@@ -143,12 +178,45 @@ module.exports = function (app) {
       //If there is some aditional parameters to sent ...
       //console.log('options length: ',options.params.length.toString());
       var addpayload = '';
+      var triggerstate = 0;
       if (options.params && options.params.length > 0){
         options.params.forEach(param => {
           //app.debug(param);
           if (param.enable == true){
             if (app.getSelfPath(param.skpath) && app.getSelfPath(param.skpath).value !== null){
-              addpayload = addpayload + ';' + String(app.getSelfPath(param.skpath).value.toFixed(2));
+              //If the field is numeric.
+              if(typeof app.getSelfPath(param.skpath).value == 'number'){
+                addpayload = addpayload + ';' + String(app.getSelfPath(param.skpath).value.toFixed(2));
+              }
+              //If the field is object, then it is a signalk zone!
+              if(typeof app.getSelfPath(param.skpath).value == 'object'){
+                  var trigger = JSON.parse(JSON.stringify(app.getSelfPath(param.skpath).value));
+                  //console.log("trigger: ",trigger);
+                  if(trigger.state !== null){
+                    console.log('Trigger state: ', trigger.state);
+                    switch (trigger.state) {
+                      case 'normal':
+                        triggerstate = 0;
+                        break;
+                      case 'alert':
+                        triggerstate = 1;
+                        break
+                      case 'warn':
+                        triggerstate = 2;
+                        break;
+                      case 'alarm':
+                        triggerstate = 3;
+                        break;
+                      case 'emergency':
+                        triggerstate = 4;
+                        break;
+                      default:
+                        triggerstate = 0;
+                    }
+                    console.log('Triggerstate (num): ',triggerstate)
+                    }
+                addpayload = addpayload + ';' + String(triggerstate);
+              }
               //console.log('Payload: ', addpayload);
             }
           }
@@ -168,6 +236,38 @@ module.exports = function (app) {
       });
     });
     */
+    
+    function checktriggerstate(){
+      triggerstate = 0;
+      if (options.triggers && options.triggers.length > 0){
+        options.triggers.forEach(trigger => {
+          //app.debug(trigger);
+          if (trigger.enable == true){
+            if (app.getSelfPath(trigger.skpath) && app.getSelfPath(trigger.skpath).value !== null){
+              //If the field is object, then it is a signalk zone!
+              if(typeof app.getSelfPath(trigger.skpath).value == 'object'){
+                  var trigger = JSON.parse(JSON.stringify(app.getSelfPath(trigger.skpath).value));
+                  //console.log("trigger: ",trigger);
+                  if(trigger.state !== null){
+                    console.log('Trigger state: ', trigger.state);
+                    if(trigger.state == trigger.value)
+                    console.log('Trigger value: ', trigger.value);
+                      triggerstate = triggerstate + 1;
+                      console.log('Trigger state is activated: ', triggerstate);
+                    }
+                }
+              //console.log('Payload: ', addpayload);
+            }
+          }
+        })
+      }
+      if(triggerstate > 0){
+        triggerstate = 1;
+      }
+      return triggerstate;
+      setTimeout(checktriggerstate, 1000 * 60); //Check every hour. TODO TOCHANGE *60 **********************
+    }
+
 
     function sendingmessage(){
       console.log('Enter in sendingmessage.');
@@ -191,8 +291,22 @@ module.exports = function (app) {
     function repeatsendingmessage(){
       console.log('Enter in repeatsendingmessage.');
       sendingmessage();
+
+
       setTimeout(repeatsendingmessage, options.messagesendingrate * 1000 * 60);
+
+      //if emergency change
+      //setTimeout(repeatsendingmessage, options.emergencymessagesendingrate * 1000 * 60);
     }
+
+    function emergencyrepeatsendingmessage(){
+      console.log('Enter in emergencyrepeatsendingmessage.');
+      sendingmessage();
+      setTimeout(repeatsendingmessage, options.emergencymessagesendingrate * 1000 * 60);
+    }
+
+    //to develop a function to check the triggers every second and that retunr 1 or 0
+    // will activate repeatsending or/and emergency sending 
 
     iridium.on('initialized', () => {
       console.log('Iridium initialized!');

@@ -166,11 +166,13 @@ The following parameters can be configured:
 * Option to compress the message in a binary form. If active the message is send compressed, otherwise the message is sent in plain text. The compressing algorithm that is used is `zlib.deflateRaw`. To uncompress use the `zlib.inflateRaw` see [zlib](https://www.zlib.net/) for more details.
 * The SignalK path of your position that is going to be reported, e.g., use 'navigation.position'.
 * Any other information you want to sent in the message can be configured here using signalK paths.
+    * Numericals field can be send in the payload of the message.
+    * Alarm states of the signalk.zones plugin can be send in the payload of the message where: 0:normal, 1:alert, 2:warn, 3:alarm, 4:emergency.
 
 Note that the message is going to have the following pattern:
-`"Name;Timestamp;Latitude;Longitude;P1;P2;P3; etc."`
+`"Name;Timestamp;Latitude;Longitude;P1;P2;P3;P4;etc."`
 
-If you want to request the rockblock to send immediatly the payload in case of emmergency you can send a TEXT MT message to the rockblock. He will reply sending immediatly the data that are required.
+If you want to request the rockblock to send immediatly the payload in case of emmergency you can send a TEXT MT message to the rockblock. He will reply sending immediatly the data that are required. This function can be improved in the near future to peform more complex tasks such as digital switching, etc.
 
 ## Authors
 * **Jean-David Caprace** - *Author of this plugin*
