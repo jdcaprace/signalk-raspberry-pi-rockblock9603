@@ -263,7 +263,7 @@ module.exports = function (app) {
       if(triggerstate > 0){
         triggerstate = 1;
       }
-      //setTimeout(checktriggerstate, 1000 * 60); //Check every hour. TODO TOCHANGE *60 **********************
+      //setTimeout(checktriggerstate, 1000 * 60 * 60);
       return triggerstate;
     }
 
@@ -290,20 +290,16 @@ module.exports = function (app) {
     function repeatsendingmessage(){
       console.log('Enter in repeatsendingmessage.');
       sendingmessage();
-      var state = checktriggerstate();
-
-      if(state == 0){
-        //Regular frequency to send messages.
-        setTimeout(repeatsendingmessage, options.messagesendingrate * 1000 * 60);
-      } else if(state == 1){
-        //Emmergency frequency to send messages.
-        setTimeout(repeatsendingmessage, options.emergencymessagesendingrate * 1000 * 60);
-      }
+      setTimeout(repeatsendingmessage, options.messagesendingrate * 1000 * 60);
     }
 
     function emergencyrepeatsendingmessage(){
       console.log('Enter in emergencyrepeatsendingmessage.');
-      sendingmessage();
+      var state = checktriggerstate();
+      console.log('Repeatsending message - trigger state: ',state);
+      if(state == 1){
+        sendingmessage();
+      }
       setTimeout(emergencyrepeatsendingmessage, options.emergencymessagesendingrate * 1000 * 60);
     }
 
@@ -311,6 +307,7 @@ module.exports = function (app) {
       console.log('Iridium initialized!');
       iridium.enableContinousServiceAvailability();
       repeatsendingmessage();
+      emergencyrepeatsendingmessage();
     });
     
     iridium.on('debug', log => {

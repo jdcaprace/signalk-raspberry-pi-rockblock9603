@@ -161,7 +161,8 @@ If you only want to monitor the service availability, the `AT+CIER=1,0,1,0` is f
 Install the plugin in signalk app store. After installation, restart the SignalK server. Go to Server and then Plugin Config.
 
 The following parameters can be configured:
-* The sending rate of the Iridium SBD messages in minutes. WARNING - ROCKBLOCK CREDITS WILL BE CONSUMED!
+* The sending rate of the regular Iridium SBD messages in minutes. WARNING - ROCKBLOCK CREDITS WILL BE CONSUMED!
+* The sending rate of the emergency Iridium SBD messages in minutes. WARNING - ROCKBLOCK CREDITS WILL BE CONSUMED!
 * The USB device path. You should tipically choose between /dev/ttyUSB0 (USB) or /dev/ttyS0 (Serial).
 * Option to compress the message in a binary form. If active the message is send compressed, otherwise the message is sent in plain text. The compressing algorithm that is used is `zlib.deflateRaw`. To uncompress use the `zlib.inflateRaw` see [zlib](https://www.zlib.net/) for more details.
 * The SignalK path of your position that is going to be reported, e.g., use 'navigation.position'.
