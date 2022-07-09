@@ -247,16 +247,15 @@ module.exports = function (app) {
               //If the field is object, then it is a signalk zone!
               if(typeof app.getSelfPath(trigger.skpath).value == 'object'){
                   var trigger = JSON.parse(JSON.stringify(app.getSelfPath(trigger.skpath).value));
-                  //console.log("trigger: ",trigger);
+                  console.log("checktriggerstate - trigger: ",trigger);
                   if(trigger.state !== null){
-                    console.log('Trigger state: ', trigger.state);
+                    console.log('checktriggerstate - Trigger state: ', trigger.state);
                     if(trigger.state == trigger.value)
-                    console.log('Trigger value: ', trigger.value);
+                    console.log('checktriggerstate - Trigger value: ', trigger.value);
                       triggerstate = triggerstate + 1;
-                      console.log('Trigger state is activated: ', triggerstate);
+                      console.log('checktriggerstate - Trigger state is activated: ', triggerstate);
                     }
                 }
-              //console.log('Payload: ', addpayload);
             }
           }
         })
@@ -264,8 +263,8 @@ module.exports = function (app) {
       if(triggerstate > 0){
         triggerstate = 1;
       }
+      //setTimeout(checktriggerstate, 1000 * 60); //Check every hour. TODO TOCHANGE *60 **********************
       return triggerstate;
-      setTimeout(checktriggerstate, 1000 * 60); //Check every hour. TODO TOCHANGE *60 **********************
     }
 
 
@@ -291,22 +290,22 @@ module.exports = function (app) {
     function repeatsendingmessage(){
       console.log('Enter in repeatsendingmessage.');
       sendingmessage();
+      var state = checktriggerstate();
 
-
-      setTimeout(repeatsendingmessage, options.messagesendingrate * 1000 * 60);
-
-      //if emergency change
-      //setTimeout(repeatsendingmessage, options.emergencymessagesendingrate * 1000 * 60);
+      if(state == 0){
+        //Regular frequency to send messages.
+        setTimeout(repeatsendingmessage, options.messagesendingrate * 1000 * 60);
+      } else if(state == 1){
+        //Emmergency frequency to send messages.
+        setTimeout(repeatsendingmessage, options.emergencymessagesendingrate * 1000 * 60);
+      }
     }
 
     function emergencyrepeatsendingmessage(){
       console.log('Enter in emergencyrepeatsendingmessage.');
       sendingmessage();
-      setTimeout(repeatsendingmessage, options.emergencymessagesendingrate * 1000 * 60);
+      setTimeout(emergencyrepeatsendingmessage, options.emergencymessagesendingrate * 1000 * 60);
     }
-
-    //to develop a function to check the triggers every second and that retunr 1 or 0
-    // will activate repeatsending or/and emergency sending 
 
     iridium.on('initialized', () => {
       console.log('Iridium initialized!');
